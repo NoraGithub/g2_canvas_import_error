@@ -1,21 +1,23 @@
 <template>
-  <div class="hello">
+  <div class="comparision">
     <canvas
-    canvas-id="canvas"
-    id="canvas"
+    canvas-id="g2_canvas"
+    id="g2_canvas"
     class="canvas"
     style="width: 375px; height: 300px;"
     v-on:click = "tapName"
   />
+  <div id="g2"></div>
   </div>
 </template>
 
 <script>
-import G2 from './g2.js'
-//import G2 from '@antv/g2'
+import G2 from '@antv/g2'
+//import G2Canvas from './g2.js'
+import G2Canvas from '@geekhacker/g2'
 
 export default {
-  name: 'HelloWorld',
+  name: 'comparision',
   data () {
     return {
       rawData: [
@@ -39,22 +41,38 @@ export default {
 
       console.log(event,e)
     },
+    renderG2Canvas(){
+      const chart = new G2Canvas.Chart({
+        el: document.getElementById('g2_canvas'),
+        width: 187.5,
+        height: 75,
+        padding: [10, 10, 10, 25],
+      })
+      //console.log(this.rawData)
+      this.processChart(chart)
+    },
+    renderG2(){
+      const chart = new G2.Chart({
+        container: 'g2',
+        width: 187.5,
+        height: 75,
+        padding: [10, 10, 10, 25],
+      })
+      //console.log(this.rawData)
+      this.processChart(chart)
+    },
+    processChart(chart){
+      chart.source(this.rawData);
+      chart.interval().position('city*tem').color('city');
+      chart.on('interval:click',ev=>{console.log(ev)});
+      //console.log(chart)
+      chart.legend({ position: 'top', textStyle: { fontSize: '10'}})
+      chart.render();
+    }
   },
   mounted(){
-    const chart = new G2.Chart({
-      el: document.getElementById('canvas'),
-      width: 180,
-      height: 80,
-      padding: [10, 10, 10, 25],
-    })
-    //console.log(this.rawData)
-    chart.source(this.rawData);
-    chart.interval().position('city*tem').color('city');
-    chart.on('interval:click',ev=>{console.log(ev)});
-    console.log(chart)
-    chart.legend({ position: 'top', textStyle: { fontSize: '10'}})
-    chart.render();
-
+    this.renderG2Canvas()
+    this.renderG2()
   }
 
 }
